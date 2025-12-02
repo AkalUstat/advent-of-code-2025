@@ -1,0 +1,3 @@
+[submodule "aoc-inputs-2025"]
+	path = aoc-inputs-2025
+	url = git@github.com:AkalUstat/aoc-inputs-2025.git
