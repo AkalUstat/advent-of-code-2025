@@ -1,8 +1,7 @@
 use aoc2025::akal_reader::read_lines;
 
-pub fn traverse_graph(lines: &Vec<String>) -> usize {
-    let mut sum = 0;
-    let matrix: Vec<Vec<char>> = lines.iter().map(|line| line.chars().collect()).collect();
+pub fn get_removeable_rolls(matrix: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
+    let mut vector_of_removable_rolls: Vec<(usize, usize)> = vec![];
 
     let col_len = matrix.len();
 
@@ -35,11 +34,36 @@ pub fn traverse_graph(lines: &Vec<String>) -> usize {
             }
 
             if num_roll_neighbors <= 4 {
-                sum += 1;
+                vector_of_removable_rolls.push((row_indx, elem_indx));
             }
         }
     }
-    sum
+
+    vector_of_removable_rolls
+}
+
+pub fn pt1(lines: &Vec<String>) -> usize {
+    let matrix: Vec<Vec<char>> = lines.iter().map(|line| line.chars().collect()).collect();
+
+    return get_removeable_rolls(&matrix).len();
+}
+
+pub fn pt2(lines: &Vec<String>) -> usize {
+    let mut removed_rolls = 0;
+    let mut matrix: Vec<Vec<char>> = lines.iter().map(|line| line.chars().collect()).collect();
+
+    let mut removeable_rolls = get_removeable_rolls(&matrix);
+
+    while removeable_rolls.len() != 0 {
+        for roll in removeable_rolls.iter() {
+            matrix[roll.0][roll.1] = '.';
+        }
+
+        removed_rolls += removeable_rolls.len();
+        removeable_rolls = get_removeable_rolls(&matrix);
+    }
+
+    removed_rolls
 }
 
 fn main() {
@@ -48,6 +72,7 @@ fn main() {
         let lines_vec: Vec<String> = lines.map_while(Result::ok).collect();
 
         // part 1
-        println!("Part 1: {}", traverse_graph(&lines_vec));
+        println!("Part 1: {}", pt1(&lines_vec));
+        println!("Part 2: {}", pt2(&lines_vec));
     }
 }
