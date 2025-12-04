@@ -13,14 +13,14 @@ pub fn get_removeable_rolls(matrix: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
             }
             let mut num_roll_neighbors = 0;
 
-            let col_indx_changes: [isize; 3] = [-1, 0, 1];
             let row_indx_changes: [isize; 3] = [-1, 0, 1];
+            let elem_indx_changes: [isize; 3] = [-1, 0, 1];
 
-            for col_change in col_indx_changes.iter() {
-                for row_change in row_indx_changes.iter() {
+            for row_change in row_indx_changes.iter() {
+                for elem_change in elem_indx_changes.iter() {
                     let new_pos = (
-                        row_indx as isize + col_change,
-                        elem_indx as isize + row_change,
+                        row_indx as isize + row_change,
+                        elem_indx as isize + elem_change,
                     );
 
                     if !(new_pos.0 < 0 || new_pos.0 as usize > col_len - 1)
