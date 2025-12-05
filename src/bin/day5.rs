@@ -44,18 +44,15 @@ fn main() {
 
         let mut bounds: Vec<AkalRange> = fresh_ranges
             .iter()
-            .map(|range| {
-                range
-                    .split("-")
-                    .map(|s| s.parse::<usize>())
-                    .flatten() // removes nones
-                    .collect::<Vec<usize>>()
+            .filter_map(|range| {
+                let mut parts = range.split("-").filter_map(|s| s.parse::<usize>().ok());
+
+                Some(AkalRange {
+                    start: parts.next()?,
+                    end: parts.next()?,
+                })
             })
-            .map(|bounds_vec| AkalRange {
-                start: bounds_vec[0],
-                end: bounds_vec[1],
-            })
-            .collect::<Vec<AkalRange>>();
+            .collect();
 
         // sort the bounds by the start value, so that we only need to compare to the previous
         // bounds for overlap
@@ -76,20 +73,18 @@ fn main() {
                     }
                 }
 
-                return acc;
+                acc
             })
             .iter()
             .map(|akal_range| akal_range.create_range())
             .collect();
 
         // part 1
-        let sum = available_ids.iter().fold(0, |acc, x| {
-            if let Some(_) = ranges.iter().find(|range| range.contains(x)) {
-                return acc + 1;
-            }
+        let sum = available_ids
+            .iter()
+            .filter(|x| ranges.iter().any(|range| range.contains(x)))
+            .count();
 
-            acc
-        });
         println!("{}", sum);
     }
 }
