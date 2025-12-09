@@ -59,26 +59,6 @@ impl PartialOrd for Position {
 
 impl Eq for Position {}
 
-#[derive(Eq, PartialEq)]
-// store pairs and their distances: using just the indices of the position
-struct PairWithDistance {
-    distance: usize,
-    i: usize,
-    j: usize,
-}
-
-impl Ord for PairWithDistance {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.distance
-            .cmp(&other.distance)
-    }
-}
-
-impl PartialOrd for PairWithDistance {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
 impl Position {
     fn squared_distance(&self, other: &Position) -> usize {
         let dx = other
@@ -128,19 +108,17 @@ fn part1() -> usize {
     pairs.sort_unstable_by_key(|p| p.0);
 
     let num_total_connections = 1000;
-    let mut num_connections_made = 0;
 
     // add all positions to the UnionFind (stores indices)
     // since its just indices, new with len() automatically populates all positions.
     let mut uf: UnionFind<usize> = UnionFind::new(positions.len());
-    for pair in pairs {
+    for (num_connections_made, pair) in pairs.into_iter().enumerate() {
         if num_connections_made == num_total_connections {
             break;
         }
         let PairWithDist(_, pos1, pos2) = pair;
 
         uf.union(pos1, pos2);
-        num_connections_made += 1;
     }
 
     // first need a hashmap to get set sizes (root, size)
