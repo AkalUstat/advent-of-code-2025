@@ -1,5 +1,6 @@
 use aoc2025::akal_reader::read_lines;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet};
+use std::time::Instant;
 
 type Node = String;
 fn dfs_for_paths(
@@ -109,6 +110,7 @@ fn main() {
         });
 
     // part 1
+     let time = Instant::now();
     let mut all_paths_pt1 = Vec::new();
     dfs_for_paths(
         String::from("you"),
@@ -120,9 +122,10 @@ fn main() {
     );
 
     let len = all_paths_pt1.len();
-    println!("Part 1: {len}");
+    println!("Part 1 in {:?}: {len}", time.elapsed());
 
     let mut cache = HashMap::new();
+     let time = Instant::now();
     let count = dfs_memoized(
         String::from("svr"),
         "out",
@@ -133,5 +136,5 @@ fn main() {
         &mut cache,
     );
 
-    println!("Part 2: {count}");
+    println!("Part 2 in {:?}: {count}", time.elapsed());
 }
